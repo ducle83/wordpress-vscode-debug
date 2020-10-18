@@ -1,0 +1,27 @@
+version: "3.1"
+
+services:
+  mysql:
+    image: mysql:5.7
+    volumes:
+      - wordpress_db_data:/var/lib/mysql
+    environment:
+      - MYSQL_ROOT_PASSWORD=DigiMed123
+      - MYSQL_DATABASE=wordpress
+
+  web:
+    image: andreccosta/wordpress-xdebug
+    links:
+      - mysql
+    environment:
+      WORDPRESS_DB_PASSWORD: DigiMed123
+      XDEBUG_CONFIG: remote_host=host.docker.internal remote_port=9000 remote_enable=1
+    volumes:
+      - ./src:/var/www/html
+    ports:
+      - "127.0.0.3:5080:80"
+    restart: on-failure
+  
+volumes:
+  wordpress_db_data:
+    external: true
